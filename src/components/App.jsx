@@ -12,14 +12,13 @@ const App = () => {
     setStep("loading");
     try {
       // Fetch data from Parser API
-      const response = await fetch("http://127.0.0.1:5000/data");
+      const response = await fetch("http://localhost:8080/data");
       const result = await response.json();
       setContestData(result);
-      console.log("refresh");
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
       setStep("resolver");
+    } catch (error) {
+      console.error("Error fetching contest data:", error);
+      setStep("loading");
     }
   };
 
