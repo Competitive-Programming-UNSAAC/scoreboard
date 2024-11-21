@@ -12,13 +12,14 @@ class TableRow extends Component {
   }
 
   numberOfTriesOnAcceptedProblem(problemLetter) {
+    /*
     let team = this.props.team;
-    return problemLetter;
     for (let i = 0; i < this.props.numberOfProblems; i++) {
       if (this.props.problems[i].index === problemLetter) {
         return team.triesOnProblems[i] + 1 + " - " + team.penaltyOnProblem[i];
       }
     }
+    */
     return problemLetter;
   }
 
