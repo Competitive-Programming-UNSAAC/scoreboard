@@ -508,7 +508,7 @@ class Scoreboard extends Component {
         });
       }
 
-      clearInterval();
+      clearInterval(intervalPendingSubmission);
       return;
     }
 
