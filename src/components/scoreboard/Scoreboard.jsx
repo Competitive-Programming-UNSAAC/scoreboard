@@ -15,6 +15,7 @@ class Scoreboard extends Component {
       submissionWhenFrozen: [],
 
       contestDuration: 0,
+      contestStart: 0,
       contestFrozenTime: 0,
       contestName: "",
 
@@ -48,14 +49,18 @@ class Scoreboard extends Component {
   };
 
   fetchDataUpdate = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/data");
-      console.log("Updating again");
-      const result = await response.json();
+    const currentDateTime = new Date();
+    console.log(currentDateTime, " / ", this.getEndtimeOfTheContest());
+    if (currentDateTime <= this.getEndtimeOfTheContest()) {
+      try {
+        const response = await fetch("http://localhost:8080/data");
+        console.log("Updating again");
+        const result = await response.json();
 
-      this.updateState(result);
-    } catch (error) {
-      console.error("Error fetching contest data:", error);
+        this.updateState(result);
+      } catch (error) {
+        console.error("Error fetching contest data:", error);
+      }
     }
   };
 
@@ -93,10 +98,12 @@ class Scoreboard extends Component {
       idOfNextUserRowHighlighted = teamx.length - 1;
     }
 
+    console.log("metadataStart", data.contestMetadata.start);
     this.setState(
       {
         submissions: submissions,
         submissionWhenFrozen: submissionWhenFrozen,
+        contestStart: data.contestMetadata.start,
         contestDuration: data.contestMetadata.duration,
         contestFrozenTime: data.contestMetadata.frozenTimeDuration,
         contestName: data.contestMetadata.name,
@@ -144,6 +151,33 @@ class Scoreboard extends Component {
     });
 
     return teams;
+  }
+
+  getEndtimeOfTheContest() {
+    const currentDateTime = new Date();
+
+    const initialDateTime = new Date(
+      currentDateTime.getFullYear(),
+      currentDateTime.getMonth(),
+      currentDateTime.getDate()
+    );
+
+    const startContestDateTime = new Date(
+      initialDateTime.getTime() + this.state.contestStart * 60 * 60 * 1000
+    );
+    console.log(
+      "initialDateTime:",
+      initialDateTime,
+      " this.state.cuscontestStart",
+      this.state.contestStart
+    );
+    console.log("start:", startContestDateTime);
+
+    const finalContestDateTime = new Date(
+      startContestDateTime.getTime() + this.state.contestDuration * 60 * 1000
+    );
+
+    return finalContestDateTime;
   }
 
   // Is executed before the first render
