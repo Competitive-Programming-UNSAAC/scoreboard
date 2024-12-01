@@ -7,19 +7,33 @@ import defaultImage from "../../assets/default.png";
 const images = { defaultImage };
 
 class TableRow extends Component {
+  shouldComponentUpdate(nextProps) {
+    // Comparar las propiedades actuales con las nuevas propiedades
+    if (
+      this.props.team !== nextProps.team ||
+      this.props.classNameForThisRow !== nextProps.classNameForThisRow ||
+      this.props.numberOfProblems !== nextProps.numberOfProblems ||
+      this.props.problems !== nextProps.problems ||
+      this.props.submissionWhenFrozen !== nextProps.submissionWhenFrozen ||
+      this.props.currentFrozenSubmission !== nextProps.currentFrozenSubmission ||
+      this.props.savedCurrentFrozenSubmission !== nextProps.savedCurrentFrozenSubmission
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   getImageForTeam(url) {
     return images[url] ?? defaultImage;
   }
 
   numberOfTriesOnAcceptedProblem(problemLetter) {
-    /*
     let team = this.props.team;
     for (let i = 0; i < this.props.numberOfProblems; i++) {
       if (this.props.problems[i].index === problemLetter) {
         return team.triesOnProblems[i] + 1 + " - " + team.penaltyOnProblem[i];
       }
     }
-    */
     return problemLetter;
   }
 
@@ -175,6 +189,8 @@ class TableRow extends Component {
   }
 
   render() {
+    // console.log("en row", this.props);
+
     let problems = this.props.problems;
 
     let sizeProblem = 84.0 / this.props.numberOfProblems;
@@ -223,7 +239,11 @@ class TableRow extends Component {
         {/*Rank*/}
         <span className="tableRow-Rank">{this.props.team.position}</span>
         {/*Photo*/}
-        <img className="tableRow-Picture" src={this.getImageForTeam(this.props.team.iconName)} alt="" />
+        <img
+          className="tableRow-Picture"
+          src={this.getImageForTeam(this.props.team.iconName)}
+          alt=""
+        />
         {/*Name+Problems*/}
         <div className="tableRow-TeamData">
           {/*ContestantName*/}
