@@ -3,6 +3,7 @@ import FlipMove from "react-flip-move";
 import TableRow from "./TableRow";
 import Header from "./Header";
 import "./Scoreboard.css";
+
 var intervalPendingSubmission = null;
 
 class Scoreboard extends Component {
@@ -49,12 +50,9 @@ class Scoreboard extends Component {
   };
 
   fetchDataUpdate = async () => {
-    const currentDateTime = new Date();
-    console.log(currentDateTime, " / ", this.getEndtimeOfTheContest());
-    if (currentDateTime <= this.getEndtimeOfTheContest()) {
+    if (this.isContestRunning() ) {
       try {
         const response = await fetch("http://localhost:8080/data");
-        console.log("Updating again");
         const result = await response.json();
 
         this.updateState(result);
@@ -98,7 +96,6 @@ class Scoreboard extends Component {
       idOfNextUserRowHighlighted = teamx.length - 1;
     }
 
-    console.log("metadataStart", data.contestMetadata.start);
     this.setState(
       {
         submissions: submissions,
@@ -153,34 +150,20 @@ class Scoreboard extends Component {
     return teams;
   }
 
-  getEndtimeOfTheContest() {
+  isContestRunning() {
+    const [dateString, timeString] = this.state.contestStart.split(' ');
+    const [day, month, year] = dateString.split('-').map(Number);
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+
+    const startContestDateTime = new Date(year, month - 1, day, hours, minutes, seconds);
+    const finalContestDateTime = new Date(startContestDateTime.getTime() + this.state.contestDuration * 60 * 1000);
     const currentDateTime = new Date();
 
-    const initialDateTime = new Date(
-      currentDateTime.getFullYear(),
-      currentDateTime.getMonth(),
-      currentDateTime.getDate()
-    );
-
-    const startContestDateTime = new Date(
-      initialDateTime.getTime() + this.state.contestStart * 60 * 60 * 1000
-    );
-    console.log(
-      "initialDateTime:",
-      initialDateTime,
-      " this.state.cuscontestStart",
-      this.state.contestStart
-    );
-    console.log("start:", startContestDateTime);
-
-    const finalContestDateTime = new Date(
-      startContestDateTime.getTime() + this.state.contestDuration * 60 * 1000
-    );
-
-    return finalContestDateTime;
+    return currentDateTime <= finalContestDateTime;
   }
 
   // Is executed before the first render
+  // componentWillMount is being deprecated, we should use componentDidMount or useEffect maybe
   componentWillMount() {
     this.fetchDataInitial();
 
