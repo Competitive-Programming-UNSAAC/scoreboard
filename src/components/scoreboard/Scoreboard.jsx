@@ -3,6 +3,7 @@ import FlipMove from "react-flip-move";
 import TableRow from "./TableRow";
 import Header from "./Header";
 import "./Scoreboard.css";
+
 var intervalPendingSubmission = null;
 
 class Scoreboard extends Component {
@@ -15,6 +16,7 @@ class Scoreboard extends Component {
       submissionWhenFrozen: [],
 
       contestDuration: 0,
+      contestStart: 0,
       contestFrozenTime: 0,
       contestName: "",
 
@@ -48,14 +50,15 @@ class Scoreboard extends Component {
   };
 
   fetchDataUpdate = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/data");
-      console.log("Updating again");
-      const result = await response.json();
+    if (this.isContestRunning() ) {
+      try {
+        const response = await fetch("http://localhost:8080/data");
+        const result = await response.json();
 
-      this.updateState(result);
-    } catch (error) {
-      console.error("Error fetching contest data:", error);
+        this.updateState(result);
+      } catch (error) {
+        console.error("Error fetching contest data:", error);
+      }
     }
   };
 
@@ -97,6 +100,7 @@ class Scoreboard extends Component {
       {
         submissions: submissions,
         submissionWhenFrozen: submissionWhenFrozen,
+        contestStart: data.contestMetadata.start,
         contestDuration: data.contestMetadata.duration,
         contestFrozenTime: data.contestMetadata.frozenTimeDuration,
         contestName: data.contestMetadata.name,
@@ -146,7 +150,20 @@ class Scoreboard extends Component {
     return teams;
   }
 
+  isContestRunning() {
+    const [dateString, timeString] = this.state.contestStart.split(' ');
+    const [day, month, year] = dateString.split('-').map(Number);
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+
+    const startContestDateTime = new Date(year, month - 1, day, hours, minutes, seconds);
+    const finalContestDateTime = new Date(startContestDateTime.getTime() + this.state.contestDuration * 60 * 1000);
+    const currentDateTime = new Date();
+
+    return currentDateTime <= finalContestDateTime;
+  }
+
   // Is executed before the first render
+  // componentWillMount is being deprecated, we should use componentDidMount or useEffect maybe
   componentWillMount() {
     this.fetchDataInitial();
 
