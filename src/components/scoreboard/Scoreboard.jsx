@@ -149,7 +149,9 @@ class Scoreboard extends Component {
   // Is executed before the first render
   componentWillMount() {
     this.fetchDataInitial();
-    this.interval = setInterval(this.fetchDataUpdate, 4000);
+
+    // refresh each 5 seconds
+    this.interval = setInterval(this.fetchDataUpdate, 5000);
   }
 
   // Is executed after the last render
@@ -630,7 +632,7 @@ class Scoreboard extends Component {
         tabIndex="0"
         onKeyDown={e => this.keyDownHandler(e)}
       >
-        <Header title={this.contestName} />
+        <Header title={this.state.contestName} />
         <div className="score-FlipMove" id="score-FlipMove">
           <FlipMove ref="flipMove" staggerDurationBy="10" duration={900}>
             {this.getScoreboard()}

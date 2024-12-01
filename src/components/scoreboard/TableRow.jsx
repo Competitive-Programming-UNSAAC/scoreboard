@@ -8,7 +8,7 @@ const images = { defaultImage };
 
 class TableRow extends Component {
   shouldComponentUpdate(nextProps) {
-    // Comparar las propiedades actuales con las nuevas propiedades
+    // Compare the current properties with the new properties
     if (
       this.props.team !== nextProps.team ||
       this.props.classNameForThisRow !== nextProps.classNameForThisRow ||
@@ -189,8 +189,6 @@ class TableRow extends Component {
   }
 
   render() {
-    // console.log("en row", this.props);
-
     let problems = this.props.problems;
 
     let sizeProblem = 84.0 / this.props.numberOfProblems;
