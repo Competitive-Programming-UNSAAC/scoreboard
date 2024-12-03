@@ -137,7 +137,7 @@ class Scoreboard extends Component {
       result.name = contestant.name;
       result.id = contestant.id;
       result.school = contestant.school;
-      result.iconName = contestant.iconName;
+      result.iconName = contestant.category;
       result.penalty = 0;
       result.solved = 0;
       result.isProblemSolved = isProblemSolved;

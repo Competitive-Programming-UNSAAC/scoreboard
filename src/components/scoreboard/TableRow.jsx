@@ -3,8 +3,15 @@ import ProblemBox from "./ProblemBox";
 import "./TableRow.css";
 
 import defaultImage from "../../assets/default.png";
+import beginner from "../../assets/beginner.png";
+import intermediate from "../../assets/intermediate.png";
+import advanced from "../../assets/advanced.png";
 
-const images = { defaultImage };
+const images = {
+  "Principiante": beginner,
+  "Intermedio": intermediate,
+  "Avanzado": advanced
+};
 
 class TableRow extends Component {
   shouldComponentUpdate(nextProps) {
